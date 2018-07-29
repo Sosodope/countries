@@ -1,18 +1,77 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import axios from "axios";
 
 class App extends Component {
+  state = {
+    country: "",
+    year: "",
+    population: []
+  };
+  componentDidMount() {
+    axios
+      .get(`http://api.population.io:80/1.0/population/2018/Bhutan/`)
+      .then(data =>
+        this.setState({
+          population: data.data
+        })
+      )
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+  handleChangeCountry = e => {
+    e.preventDefault();
+    this.setState({
+      country: e.target.value
+    });
+  };
+  handleChangeYear = e => {
+    e.preventDefault();
+    this.setState({
+      year: e.target.value
+    });
+  };
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <form>
+          <input
+            type="text"
+            value={this.state.country}
+            placeholder="Enter a country name"
+            onChange={this.handleChangeCountry}
+          />
+          <input
+            type="text"
+            value={this.state.year}
+            onChange={this.handleChangeYear}
+            placeholder="Enter a year"
+          />
+          <input type="submit" value="Submit" onClick={this.handleSubmit} />
+        </form>
+        <div className="table">
+          <table>
+            <thead>
+              <tr>
+                <td>Age</td>
+                <td>Females</td>
+                <td>Males</td>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.population.map(pop => {
+                return (
+                  <tr key={pop.age}>
+                    <td>{pop.age}</td>
+                    <td>{pop.females}</td>
+                    <td>{pop.males} </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
