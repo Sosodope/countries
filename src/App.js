@@ -10,7 +10,7 @@ class App extends Component {
   };
   componentDidMount() {
     axios
-      .get(`http://api.population.io:80/1.0/population/2018/Bhutan/`)
+      .get(`http://api.population.io:80/1.0/population/2018/Bhutan`)
       .then(data =>
         this.setState({
           population: data.data
@@ -31,6 +31,23 @@ class App extends Component {
     this.setState({
       year: e.target.value
     });
+  };
+  handleSubmit = e => {
+    e.preventDefault();
+    const country = this.state.country;
+    const year = this.state.year;
+    axios
+      .get(`http://api.population.io:80/1.0/population/${year}/${country}`)
+      .then(data =>
+        this.setState({
+          population: data.data,
+          country: "",
+          year: ""
+        })
+      )
+      .catch(function(error) {
+        console.log(error);
+      });
   };
   render() {
     return (
